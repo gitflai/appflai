@@ -1,9 +1,9 @@
 import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
+import pandas as pd 
 from pycaret.classification import load_model, predict_model
 
-st.set_page_config(page_title = 'App FLAI - Powered by Streamlit',  
+st.set_page_config(page_title = 'App FLAI - Powered by Streamlit', 
+				   page_icon = 'iconeflai.png' ,
 				   layout = 'centered', 
 				   initial_sidebar_state = 'auto')
 
@@ -17,12 +17,15 @@ def ler_dados():
 
 dados = ler_dados()  
 
+st.image('bannerflai.jpg', use_column_width = 'always')
+
 st.sidebar.markdown('# **App FLAI - Powered by *Streamlit***')
 opcoes = paginas = ['Home', 'Análise de Dados', 'Dashboard', 'Modelo de Proposta de Salário', 'Streamlit Widgets', 'Sobre']
 pagina = st.sidebar.radio('Selecione uma página:', paginas)
+st.sidebar.markdown('---')
 
 if pagina == 'Home':
-	st.image('bannerflai.jpg', use_column_width = 'always')
+	
 
 	st.write("""
 	# Bem-vindo ao App FLAI - Powered by Streamlit
@@ -223,3 +226,20 @@ if pagina == 'Streamlit Widgets':
 	st.file_uploader('File uploader')
 	st.color_picker('Pick a color')
 
+
+
+
+
+
+
+
+
+
+st.sidebar.markdown('---')
+st.sidebar.image('logoflai.png', width = 150)
+
+
+
+
+#https://www.youtube.com/channel/UC2wMHF4HBkTMGLsvZAIWzRg
+#https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q
