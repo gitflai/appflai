@@ -19,37 +19,47 @@ dados = ler_dados()
 
 st.image('bannerflai.jpg', use_column_width = 'always')
 
-st.sidebar.markdown('# **App FLAI - Powered by *Streamlit***')
-opcoes = paginas = ['Home', 'Análise de Dados', 'Dashboard', 'Modelo de Proposta de Salário', 'Streamlit Widgets', 'Sobre']
+st.sidebar.write('''
+# :sparkles: **App [FLAI](https://www.flai.com.br/)**
+***Powered by [Streamlit](https://streamlit.io/)***
+
+---
+
+	''')
+ 
+opcoes = paginas = ['Home', 'Análise de Dados', 'Dashboard', 'Modelo de Proposta de Salário', 'Streamlit Widgets', 'Sobre', 'Código']
 pagina = st.sidebar.radio('Selecione uma página:', paginas)
-st.sidebar.markdown('---')
+#st.sidebar.markdown('---')
 
 if pagina == 'Home':
 	
 
 	st.write("""
-	# Bem-vindo ao App FLAI - Powered by Streamlit
+	# :sparkles: Bem-vindo ao App FLAI
+	***Powered by Streamlit***
 	
-	Nesse Web App podemos utilizar em produção os modelos desenvolvidos tanto para
-	precificar novos seguros, quanto para buscar por fraudadores do seguro.
-	
-	A lista abaixo ilustra o que está implementado até o momento. 
+	---
+
+	Nesse Web App vamos fazer análises de dados rápidas, dashboards e deploy de um modelo para estimar salários de profissionais da área de dados.
+
 	### Funcionalidades no momento
 	
-	:ballot_box_with_check:  Página Inicial 
+	:ballot_box_with_check:  Página Inicial: Home
 	
-	:ballot_box_with_check:  Modelo em produção para precificar planos de saúde em novos clientes
+	:ballot_box_with_check:  Sub-página para Análise de Dados
+
+	:ballot_box_with_check:  Sub-página para Dashboards
+
+	:ballot_box_with_check:  Sub-página para Deploy do Modelo de Estimação de Salário de Profissionais de Dados no Brasil
 	
-	:ballot_box_with_check:  Modelo em produção para detectar possíveis fraudadores 
+	:black_square_button:  Deploy em lote (de vários pessoas ao mesmo tempo, a partir de um arquivo)
 	
-	:black_square_button:  Deploy em lote (vários pessoas ao mesmo tempo)
-	
-	:ballot_box_with_check:  Página de créditos 
+	:ballot_box_with_check:  Página Sobre 
 
 	Os modelos desse web-app foram desenvolvidos utilizando o conjunto de 
-	dados que pode ser encontrado nesse [link do kaggle](https://www.kaggle.com/mirichoi0218/insurance).
+	dados que pode ser encontrado nesse [link do kaggle](https://www.kaggle.com/datahackers/pesquisa-data-hackers-2019).
 	
-	O referencial sobre os modelos utilizados você pode encontrar nesse [link](https://github.com/gitflai/Workshop-DDS/blob/main/Dados_de_Custos_Medicos.ipynb). 
+	Os arquivos para gerar esse aplicativo estão nesse [link](https://github.com/gitflai/imersao). 
 	
 	Os modelos são desenvolvidos e analisados utilizando a biblioteca [PyCaret](https://pycaret.org/).
 	
@@ -57,8 +67,10 @@ if pagina == 'Home':
 	
 	Para mais informações sobre o Streamlit, consulte o [site oficial](https://www.streamlit.io/) ou a sua [documentação](https://docs.streamlit.io/_/downloads/en/latest/pdf/).
 	
-	[Lista de emojis para markdown](https://gist.github.com/rxaviers/7360908).
+	[Lista de emojis para markdown](https://gist.github.com/rxaviers/7360908)
+ 	
  
+
 	""")
 
 
@@ -66,13 +78,28 @@ if pagina == 'Home':
 
 
 if pagina == 'Análise de Dados': 
+	st.markdown('''
+		## **Análise de Dados**
+		**Utilize essa página para explorar as variáveis do conjunto de dados utilizado.**
+		''')
 	variaveis = dados.columns.to_list()
 
-	var = st.selectbox('Selecione:', variaveis) 
+	st.markdown('---')
+	st.markdown('### Uma amostra dos dados:')
+	st.write(dados.sample(10))
+
+	st.markdown('---')
+	st.markdown('### Algumas descritivas dos dados:')
+	st.table(dados.describe())
+
+	st.markdown('---')
+	st.markdown('### Gráficos de Contagem:')
+	var = st.selectbox('Selecione uma variável:', variaveis) 
 	g1  = dados[var].value_counts().plot(kind = 'barh', title = 'Contagem {}'.format(var)) 
 	st.pyplot(g1.figure)
  
 	st.markdown('---')
+	st.markdown('### Gráficos do Salário por Variável:')
 	lvar2 = variaveis.copy()
 	lvar2.pop(0) 
 	var1 = st.selectbox('Selecione:', lvar2)
@@ -81,6 +108,7 @@ if pagina == 'Análise de Dados':
 
 
 	st.markdown('---')
+	st.markdown('### Gráficos do Salário em relação a duas Variáveis:')
 	v1 = st.selectbox('Selecione uma variável:', lvar2)
 	v2 = st.selectbox('Selecione outra variável:', lvar2)
 	titulo = 'Salário por {} e {}'.format(v1, v2)
@@ -90,7 +118,10 @@ if pagina == 'Análise de Dados':
 
 if pagina == 'Dashboard': 
 
-	prof = st.sidebar.radio('Profissão', dados['Profissão'].unique().tolist(), index = 3)
+	st.sidebar.markdown('### **Menu Complementar**')
+	vrs = dados['Profissão'].unique().tolist()
+	vrs.remove('Outras')
+	prof = st.sidebar.radio('Profissão', vrs , index = 3)
 	dados0 = dados[dados['Profissão'] == prof]
 	n = dados0.shape[0]
 	s = dados0['Salário'].mean()
@@ -105,10 +136,10 @@ if pagina == 'Dashboard':
 	st.markdown('---')
 	col1, col2 = st.beta_columns((1, 2))
 
-	d1 = dados0['Escolaridade'].value_counts().plot(kind = 'pie')
+	d1 = dados0['Idade'].value_counts().plot(kind = 'barh')
 	col1.pyplot(d1.figure, clear_figure = True)
 
-	d2 = dados0['Linguagem Python'].value_counts().plot(kind = 'bar', title ='Python') 
+	d2 = dados0['Linguagem Python'].value_counts().plot(kind = 'pie', title ='Python') 
 	col1.pyplot(d2.figure, clear_figure = True)
 
 	titulo = 'Salário por Idade e Tamanho da Empresa'
@@ -120,6 +151,10 @@ if pagina == 'Dashboard':
 
 if pagina == 'Modelo de Proposta de Salário': 
 	st.markdown('---')
+	st.markdown('## **Modelo para Estimar o Salário de Profissionais da área de Dados**')
+	st.markdown('Utilize as variáveis abaixo para utilizar o modelo de previsão de salários desenvolvido [aqui]().')
+	st.markdown('---')
+
 	col1, col2, col3 = st.beta_columns(3)
 
 	x1 = col1.radio('Idade', dados['Idade'].unique().tolist() )
@@ -136,8 +171,7 @@ if pagina == 'Modelo de Proposta de Salário':
 	x12 = col3.radio('Linguagem Python', dados['Linguagem Python'].unique().tolist()) 
 	x13 = col3.radio('Linguagem R', dados['Linguagem R'].unique().tolist()) 
 	x14 = col3.radio('Linguagem SQL', dados['Linguagem SQL'].unique().tolist()) 
-	
-	st.markdown('---')
+	 
 
 	dicionario  =  {'Idade': [x1],
 				'Profissão': [x2],
@@ -157,6 +191,8 @@ if pagina == 'Modelo de Proposta de Salário':
 	dados = pd.DataFrame(dicionario)  
 
 	st.markdown('---') 
+	st.markdown('## **Quando terminar de preencher as informações da pessoa, clique no botão abaixo para estimar o salário de tal profissional**') 
+
 
 	if st.button('EXECUTAR O MODELO'):
 		saida = float(predict_model(modelo, dados)['Label']) 
@@ -216,30 +252,78 @@ if pagina == 'Streamlit Widgets':
 	
 	st.markdown('---')
 
-	  
 	st.select_slider('Slide to select', options=[1,'2'])
-	st.text_input('Enter some text')
-	st.number_input('Enter a number')
-	st.text_area('Area for textual entry')
-	st.date_input('Date input')
-	st.time_input('Time entry')
-	st.file_uploader('File uploader')
-	st.color_picker('Pick a color')
+	st.markdown('---')
+
+	st.text_input('Entrada de Texto')
+	st.markdown('---')
+
+	st.number_input('Entre com um número')
+	st.markdown('---')
+
+	st.text_area('Entre com um Textão')
+	st.markdown('---')
+
+	st.date_input('Entre com uma data')
+	st.markdown('---')
+
+	st.time_input('Entre com um horário')
+	st.markdown('---')
+
+	st.file_uploader('Suba um arquivo do seu computador')
+	st.markdown('---')
+
+	st.color_picker('Escolha uma cor')
+	st.markdown('---')
 
 
 
+if pagina == 'Sobre':
+
+	st.markdown(""" 
+
+	## **Sobre**
+
+	Nesse Web App mostramos o poder do streamlit para construir soluções fáceis, rápidas e que permitem uma usabilidade bastante ampla.')
+		
+	Pare por um momento e imagine o universo de possibilidades que temos ao combinar\
+		todos os recursos do streamlit com o que já temos no Python.
+		
+	Esse tipo de web-app é perfeito para quando se quer entregar uma solução rápida\
+		e/ou criar um ambiente de testes mais eficiente.
+
+	Não deixe de explorar os recursos do streamlit. Aprenda, crie, desenvolva. \
+		Faça o que ninguém fez ainda. Vá além. 
+
+	*#itstimetoflai* :rocket:
+
+	---
+	
+             """) 
+
+	if st.button('Comemorar'):
+		st.balloons()
 
 
 
+if pagina == 'Código':
 
+	st.markdown('''
+		## **Código para gerar esse app**
+		Também pode ser encontrado [aqui](https://github.com/gitflai/imersao)
+		''')
+	code = '''
+def hello():
+	print("Hello, Streamlit!")
+    
 
+    '''
+
+	st.code(code, language='python')
 
 
 st.sidebar.markdown('---')
-st.sidebar.image('logoflai.png', width = 150)
+st.sidebar.image('logoflai.png', width = 90)
 
 
 
-
-#https://www.youtube.com/channel/UC2wMHF4HBkTMGLsvZAIWzRg
-#https://www.youtube.com/channel/UCV8e2g4IWQqK71bbzGDEI4Q
