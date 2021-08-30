@@ -27,7 +27,7 @@ st.sidebar.write('''
 
 	''')
  
-opcoes = paginas = ['Home', 'Análise de Dados', 'Dashboard', 'Modelo de Proposta de Salário', 'Streamlit Widgets', 'Sobre', 'Código']
+opcoes = paginas = ['Home', 'Modelo de Proposta de Salário', 'Sobre']
 pagina = st.sidebar.radio('Selecione uma página:', paginas)
 #st.sidebar.markdown('---')
 
@@ -35,7 +35,7 @@ if pagina == 'Home':
 	
 
 	st.write("""
-	# :sparkles: Bem-vindo ao App FLAI
+	# :sparkles: Bem-vindo ao App FLAI - O Salário do Profissional de Dados
 	***Powered by Streamlit***
 	
 	---
@@ -46,107 +46,20 @@ if pagina == 'Home':
 	
 	:ballot_box_with_check:  Página Inicial: Home
 	
-	:ballot_box_with_check:  Sub-página para Análise de Dados
-
-	:ballot_box_with_check:  Sub-página para Dashboards
-
-	:ballot_box_with_check:  Sub-página para Deploy do Modelo de Estimação de Salário de Profissionais de Dados no Brasil
-	
-	:black_square_button:  Deploy em lote (de vários pessoas ao mesmo tempo, a partir de um arquivo)
-	
+	:ballot_box_with_check:  Modelo de Estimação de Salário de Profissionais de Dados no Brasil
+		
 	:ballot_box_with_check:  Página Sobre 
 
 	Os modelos desse web-app foram desenvolvidos utilizando o conjunto de 
 	dados que pode ser encontrado nesse [link do kaggle](https://www.kaggle.com/datahackers/pesquisa-data-hackers-2019).
-	
-	Os arquivos para gerar esse aplicativo estão nesse [link](https://github.com/gitflai/imersao). 
-	
-	Os modelos são desenvolvidos e analisados utilizando a biblioteca [PyCaret](https://pycaret.org/).
-	
+			
 	Caso encontre algum erro/bug, por favor, não hesite em entrar em contato! :poop:
 	
 	Para mais informações sobre o Streamlit, consulte o [site oficial](https://www.streamlit.io/) ou a sua [documentação](https://docs.streamlit.io/_/downloads/en/latest/pdf/).
-	
-	[Lista de emojis para markdown](https://gist.github.com/rxaviers/7360908)
- 	
- 
+	 
 
 	""")
 
-
-
-
-
-if pagina == 'Análise de Dados': 
-	st.markdown('''
-		## **Análise de Dados**
-		**Utilize essa página para explorar as variáveis do conjunto de dados utilizado.**
-		''')
-	variaveis = dados.columns.to_list()
-
-	st.markdown('---')
-	st.markdown('### Uma amostra dos dados:')
-	st.write(dados.sample(10))
-
-	st.markdown('---')
-	st.markdown('### Algumas descritivas dos dados:')
-	st.table(dados.describe())
-
-	st.markdown('---')
-	st.markdown('### Gráficos de Contagem:')
-	var = st.selectbox('Selecione uma variável:', variaveis) 
-	g1  = dados[var].value_counts().plot(kind = 'barh', title = 'Contagem {}'.format(var)) 
-	st.pyplot(g1.figure)
- 
-	st.markdown('---')
-	st.markdown('### Gráficos do Salário por Variável:')
-	lvar2 = variaveis.copy()
-	lvar2.pop(0) 
-	var1 = st.selectbox('Selecione:', lvar2)
-	g2 = dados['Salário'].groupby(dados[var1]).mean().plot(kind = 'barh', title = 'Salário por {}'.format(var1))
-	st.pyplot(g2.figure)
-
-
-	st.markdown('---')
-	st.markdown('### Gráficos do Salário em relação a duas Variáveis:')
-	v1 = st.selectbox('Selecione uma variável:', lvar2)
-	v2 = st.selectbox('Selecione outra variável:', lvar2)
-	titulo = 'Salário por {} e {}'.format(v1, v2)
-	g3 = dados.groupby([v1, v2]).mean()['Salário'].unstack().plot(kind = 'barh', title = titulo)
-	st.pyplot(g3.figure)
-
-
-if pagina == 'Dashboard': 
-
-	st.sidebar.markdown('### **Menu Complementar**')
-	vrs = dados['Profissão'].unique().tolist()
-	vrs.remove('Outras')
-	prof = st.sidebar.radio('Profissão', vrs , index = 3)
-	dados0 = dados[dados['Profissão'] == prof]
-	n = dados0.shape[0]
-	s = dados0['Salário'].mean()
-
-	st.markdown('# Dashboard dos **{}**'.format(prof))
-
-	st.markdown('---')
-	col1, col2 = st.beta_columns((1, 2))
-	col1.markdown('### Amostra: **{}**'.format(n))
-	col2.markdown('### Salário: **R${:.2f}**'.format(s)) 
-
-	st.markdown('---')
-	col1, col2 = st.beta_columns((1, 2))
-
-	d1 = dados0['Idade'].value_counts().plot(kind = 'barh')
-	col1.pyplot(d1.figure, clear_figure = True)
-
-	d2 = dados0['Linguagem Python'].value_counts().plot(kind = 'pie', title ='Python') 
-	col1.pyplot(d2.figure, clear_figure = True)
-
-	titulo = 'Salário por Idade e Tamanho da Empresa'
-	d3 = dados0.groupby(['Idade', 'Tamanho da Empresa']).mean()['Salário'].unstack().plot(kind = 'barh', title = titulo)
-	col2.pyplot(d3.figure, clear_figure = True)
-
-	st.markdown('---')
 
 
 if pagina == 'Modelo de Proposta de Salário': 
@@ -203,81 +116,6 @@ if pagina == 'Modelo de Proposta de Salário':
 
 
 
-
-
-
-if pagina == 'Streamlit Widgets':
-	# col1, col2 = st.beta_columns(2) 
-	st.markdown('---')
-
-	st.markdown('### **Botões**')
-	st.markdown('Guardam valores **True** ou **False**')
-	st.code("st.button(label = '-> Clique aqui! <-', help = 'É só clicar ali')")
-	st.button(label = '-> Clique aqui! <-', help = 'É só clicar ali')
-
-	st.markdown('---')
-
-	st.markdown('### **Caixa de Selecionar**')
-	st.markdown('Guardam valores **True** ou **False**')
-	st.code("st.checkbox('Clique para me selecionar', help = 'Clique e desclique quando quiser')")
-	st.checkbox('Clique para me selecionar', help = 'Clique e desclique quando quiser')
-
-	st.markdown('---')
-
-	st.markdown('### **Botões de Rádio**')
-	st.markdown('Guarda o item do botão selecionado')
-	st.code("st.radio('Botões de Rádio', options = [100, 'Python', print, [1, 2, 3]], index = 1, help = 'Ajuda')")
-	st.radio('Botões de Rádio', options = [100, 'Python', print, [1, 2, 3]], index = 1, help = 'Ajuda')
-
-	st.markdown('---')
-
-	st.markdown('### **Caixas de Seleção**')
-	st.markdown('Guarda o item da caixa selecionado')
-	st.code("st.selectbox('Clique no item que deseja', options = ['azul', 'roxo', 'verde'], index = 2)")
-	st.selectbox('Clique no item que deseja', options = ['azul', 'roxo', 'verde'], index = 2)
-
-	st.markdown('---')
-
-	st.markdown('### **Caixas de Seleção Múltipla**')
-	st.markdown('Guarda a lista de itens selecionados')
-	st.code("st.multiselect('Selecione quantas opções desejar', options = ['A', 'B', 'C', 'D', 'E'])")
-	st.multiselect('Selecione quantas opções desejar', options = ['A', 'B', 'C', 'D', 'E'])
-	
-	st.markdown('---')
-
-	st.markdown('### **Slider**')
-	st.markdown('Guarda o número selecionado')
-	st.code("st.slider('Entrada numérica', min_value = 1, max_value = 25, value = 7, step = 2)	")
-	st.slider('Entrada numérica', min_value = 1, max_value = 25, value = 7, step = 2)	
-	
-	st.markdown('---')
-
-	st.select_slider('Slide to select', options=[1,'2'])
-	st.markdown('---')
-
-	st.text_input('Entrada de Texto')
-	st.markdown('---')
-
-	st.number_input('Entre com um número')
-	st.markdown('---')
-
-	st.text_area('Entre com um Textão')
-	st.markdown('---')
-
-	st.date_input('Entre com uma data')
-	st.markdown('---')
-
-	st.time_input('Entre com um horário')
-	st.markdown('---')
-
-	st.file_uploader('Suba um arquivo do seu computador')
-	st.markdown('---')
-
-	st.color_picker('Escolha uma cor')
-	st.markdown('---')
-
-
-
 if pagina == 'Sobre':
 
 	st.markdown(""" 
@@ -306,20 +144,6 @@ if pagina == 'Sobre':
 
 
 
-if pagina == 'Código':
-
-	st.markdown('''
-		## **Código para gerar esse app**
-		Também pode ser encontrado [aqui](https://github.com/gitflai/imersao)
-		''')
-	code = '''
-def hello():
-	print("Hello, Streamlit!")
-    
-
-    '''
-
-	st.code(code, language='python')
 
 
 st.sidebar.markdown('---')
