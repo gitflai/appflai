@@ -129,12 +129,12 @@ if pagina == 'Dashboard':
 	st.markdown('# Dashboard dos **{}**'.format(prof))
 
 	st.markdown('---')
-	col1, col2 = st.columns((1, 2))
+	col1, col2 = st.beta_columns((1, 2))
 	col1.markdown('### Amostra: **{}**'.format(n))
 	col2.markdown('### Salário: **R${:.2f}**'.format(s)) 
 
 	st.markdown('---')
-	col1, col2 = st.columns((1, 2))
+	col1, col2 = st.beta_columns((1, 2))
 
 	d1 = dados0['Idade'].value_counts().plot(kind = 'barh')
 	col1.pyplot(d1.figure, clear_figure = True)
@@ -155,7 +155,7 @@ if pagina == 'Modelo de Proposta de Salário':
 	st.markdown('Utilize as variáveis abaixo para utilizar o modelo de previsão de salários desenvolvido [aqui]().')
 	st.markdown('---')
 
-	col1, col2, col3 = st.columns(3)
+	col1, col2, col3 = st.beta_columns(3)
 
 	x1 = col1.radio('Idade', dados['Idade'].unique().tolist() )
 	x2 = col1.radio('Profissão', dados['Profissão'].unique().tolist())
@@ -207,7 +207,7 @@ if pagina == 'Modelo de Proposta de Salário':
 
 
 if pagina == 'Streamlit Widgets':
-	# col1, col2 = st.columns(2) 
+	# col1, col2 = st.beta_columns(2) 
 	st.markdown('---')
 
 	st.markdown('### **Botões**')
